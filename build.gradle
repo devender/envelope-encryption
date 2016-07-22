@@ -1,0 +1,46 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("io.spring.gradle:dependency-management-plugin:0.5.4.RELEASE")
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+    apply plugin: "io.spring.dependency-management"
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+    dependencyManagement {
+        imports {
+            mavenBom 'com.amazonaws:aws-java-sdk-bom:1.10.47'
+        }
+    }
+    dependencies {
+        compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.21'
+        compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.7'
+        testCompile('junit:junit:4.12')
+    }
+}
+
+project(':envelope-encryption-aws') {
+
+    dependencies {
+        compile project(':envelope-encryption-api')
+        compile('com.amazonaws:aws-java-sdk-s3')
+    }
+}
+
+project(':envelope-encryption-vault') {
+    dependencies {
+        compile project(':envelope-encryption-api')
+        compile('com.bettercloud:vault-java-driver:1.1.0')
+    }
+}
